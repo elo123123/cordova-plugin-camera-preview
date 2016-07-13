@@ -1,4 +1,3 @@
-cordova.define("com.mbppower.camerapreview.CameraPreview", function(require, exports, module) {
 var argscheck = require('cordova/argscheck'),
   utils = require('cordova/utils'),
   exec = require('cordova/exec');
@@ -59,5 +58,3 @@ CameraPreview.disable = function(disable) {
 };
 
 module.exports = CameraPreview;
-
-});
