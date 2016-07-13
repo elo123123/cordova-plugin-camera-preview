@@ -1,3 +1,4 @@
+cordova.define("com.mbppower.camerapreview.CameraPreview", function(require, exports, module) {
 var argscheck = require('cordova/argscheck'),
   utils = require('cordova/utils'),
   exec = require('cordova/exec');
@@ -19,6 +20,15 @@ CameraPreview.startCamera = function(rect, defaultCamera, tapEnabled, dragEnable
 CameraPreview.stopCamera = function() {
   exec(null, null, PLUGIN_NAME, "stopCamera", []);
 };
+CameraPreview.focus = function(size) {
+  var params = [0, 0];
+  if (size) {
+    params = [size.maxWidth, size.maxHeight];
+  }
+  exec(null, null, PLUGIN_NAME, "focus", params);
+};
+
+
 //@param size {maxWidth: 100, maxHeight:100}
 CameraPreview.takePicture = function(size) {
   var params = [0, 0];
@@ -49,3 +59,5 @@ CameraPreview.disable = function(disable) {
 };
 
 module.exports = CameraPreview;
+
+});
