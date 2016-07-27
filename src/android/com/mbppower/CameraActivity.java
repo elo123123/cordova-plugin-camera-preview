@@ -334,7 +334,7 @@ public class CameraActivity extends Fragment {
 					public void onAutoFocus(boolean success, Camera camera) {
             takePicture(maxWidth, maxHeight);
 						if(success){
-              Log.d("---------------------->", "SUCCESS")
+              Log.d("---------------------->", "SUCCESS");
             }
             else{
               Log.d("---------------------->", "CANNOT");
