@@ -332,12 +332,13 @@ public class CameraActivity extends Fragment {
 				mCamera.autoFocus(new Camera.AutoFocusCallback() {
 					@Override
 					public void onAutoFocus(boolean success, Camera camera) {
+            takePicture(maxWidth, maxHeight);
 						if(success){
 							// return true;
-							takePicture(maxWidth, maxHeight);
+							Log.d("---------------------->", "SUCCESS");
 						}
             else{
-              Log.d("---------------------->", success);
+              Log.d("---------------------->", "CANNOT");
             }
 					}
 				});
