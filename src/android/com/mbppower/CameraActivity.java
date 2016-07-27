@@ -336,6 +336,9 @@ public class CameraActivity extends Fragment {
 							// return true;
 							takePicture(maxWidth, maxHeight);
 						}
+            else{
+              Log.d("---------------------->", success);
+            }
 					}
 				});
 			}
