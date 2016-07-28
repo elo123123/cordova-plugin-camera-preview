@@ -630,7 +630,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
 		setMeasuredDimension(width, height);
 
 		if (mSupportedPreviewSizes != null) {
-			mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
+			mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, 2048, 1536);
 		}
 	}
 
