@@ -43,7 +43,8 @@ import java.util.List;
 public class CameraActivity extends Fragment {
 
 	public interface CameraPreviewListener {
-		public void onPictureTaken(String originalPicturePath, String previewPicturePath);
+		// public void onPictureTaken(String originalPicturePath, String previewPicturePath);
+		public void onPictureTaken(String originalPicturePath);
 	}
 
 	private CameraPreviewListener eventListener;
@@ -135,9 +136,22 @@ public class CameraActivity extends Fragment {
 
 							boolean isSingleTapTouch = gestureDetector.onTouchEvent(event);
 							if (event.getAction() != MotionEvent.ACTION_MOVE && isSingleTapTouch) {
-								if (tapToTakePicture) {
-									takePicture(0, 0);
-								}
+								getActivity().runOnUiThread(new Runnable() {
+									@Override
+									public void run() {
+										mCamera.cancelAutoFocus();
+										mCamera.autoFocus(new Camera.AutoFocusCallback() {
+											@Override
+											public void onAutoFocus(boolean success, Camera camera) {
+												Log.d(TAG, "FOCUS");
+											}
+										});
+									}
+								});
+
+								// if (tapToTakePicture) {
+								// 	takePicture(0, 0);
+								// }
 								return true;
 							}
 							else {
@@ -403,11 +417,13 @@ public class CameraActivity extends Fragment {
 									Bitmap originalPicture = Bitmap.createBitmap(finalPic, 0, 0, (int)(finalPic.getWidth()), (int)(finalPic.getHeight()), matrix, false);
 
 									//get bitmap and compress
-									Bitmap picture = loadBitmapFromView(view.findViewById(getResources().getIdentifier("frame_camera_cont", "id", appResourcesPackage)));
-									ByteArrayOutputStream stream = new ByteArrayOutputStream();
-									picture.compress(Bitmap.CompressFormat.PNG, 80, stream);
+									//preview picture
+									// Bitmap picture = loadBitmapFromView(view.findViewById(getResources().getIdentifier("frame_camera_cont", "id", appResourcesPackage)));
+									// ByteArrayOutputStream stream = new ByteArrayOutputStream();
+									// picture.compress(Bitmap.CompressFormat.PNG, 80, stream);
 
-									generatePictureFromView(originalPicture, picture);
+									// generatePictureFromView(originalPicture, picture);
+									generatePictureFromView(originalPicture);
 									canTakePicture = true;
 								}
 							});
@@ -420,7 +436,8 @@ public class CameraActivity extends Fragment {
 			canTakePicture = true;
 		}
 	}
-	private void generatePictureFromView(final Bitmap originalPicture, final Bitmap picture){
+	// private void generatePictureFromView(final Bitmap originalPicture, final Bitmap picture){
+	private void generatePictureFromView(final Bitmap originalPicture){
 
 		final FrameLayout cameraLoader = (FrameLayout)view.findViewById(getResources().getIdentifier("camera_loader", "id", appResourcesPackage));
 		cameraLoader.setVisibility(View.VISIBLE);
@@ -429,10 +446,11 @@ public class CameraActivity extends Fragment {
 			public void run() {
 
 				try {
-					final File picFile = storeImage(picture, "_preview");
+					// final File picFile = storeImage(picture, "_preview");
 					final File originalPictureFile = storeImage(originalPicture, "_original");
 
-					eventListener.onPictureTaken(originalPictureFile.getAbsolutePath(), picFile.getAbsolutePath());
+					// eventListener.onPictureTaken(originalPictureFile.getAbsolutePath(), picFile.getAbsolutePath());
+					eventListener.onPictureTaken(originalPictureFile.getAbsolutePath());
 
 					getActivity().runOnUiThread(new Runnable() {
 						@Override
