@@ -648,7 +648,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
 		setMeasuredDimension(width, height);
 
 		if (mSupportedPreviewSizes != null) {
-			mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, 2048, 1536);
+			mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
 		}
 	}
 
@@ -729,7 +729,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
 		}
 	}
 	private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
-		final double ASPECT_TOLERANCE = 0.1;
+		final double ASPECT_TOLERANCE = 0.05;
 		double targetRatio = (double) w / h;
 		if (displayOrientation == 90 || displayOrientation == 270) {
 			targetRatio = (double) h / w;
@@ -740,27 +740,38 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
 		double minDiff = Double.MAX_VALUE;
 
 		int targetHeight = h;
+    int count = 0;
 
 		// Try to find an size match aspect ratio and size
 		for (Camera.Size size : sizes) {
 			double ratio = (double) size.width / size.height;
-			if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
-			if (Math.abs(size.height - targetHeight) < minDiff) {
-				optimalSize = size;
-				minDiff = Math.abs(size.height - targetHeight);
-			}
+			if (Math.abs(ratio - targetRatio) < ASPECT_TOLERANCE){
+        optimalSize = size;
+        break;
+      }
+
+      if (Math.abs(size.height - targetHeight) < minDiff) {
+      	optimalSize = size;
+      	minDiff = Math.abs(size.height - targetHeight);
+      }
+
+      if(count == 3){
+        optimalSize = size;
+        break;
+      }
+      count++;
 		}
 
 		// Cannot find the one match the aspect ratio, ignore the requirement
-		if (optimalSize == null) {
-			minDiff = Double.MAX_VALUE;
-			for (Camera.Size size : sizes) {
-				if (Math.abs(size.height - targetHeight) < minDiff) {
-					optimalSize = size;
-					minDiff = Math.abs(size.height - targetHeight);
-				}
-			}
-		}
+		// if (optimalSize == null) {
+		// 	minDiff = Double.MAX_VALUE;
+		// 	for (Camera.Size size : sizes) {
+		// 		if (Math.abs(size.height - targetHeight) < minDiff) {
+		// 			optimalSize = size;
+		// 			minDiff = Math.abs(size.height - targetHeight);
+		// 		}
+		// 	}
+		// }
 
 		Log.d(TAG, "optimal preview size: w: " + optimalSize.width + " h: " + optimalSize.height);
 		return optimalSize;
