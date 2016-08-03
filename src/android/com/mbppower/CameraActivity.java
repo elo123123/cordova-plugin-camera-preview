@@ -225,8 +225,13 @@ public class CameraActivity extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		try{
+			mCamera = Camera.open(defaultCameraId);
+		}
+		catch(Exception exc){
+			Log.d(TAG, "Can not Load Camera. because, " + exc);
+		}
 
-		mCamera = Camera.open(defaultCameraId);
 
 		if (cameraParameters != null) {
 			mCamera.setParameters(cameraParameters);
@@ -498,7 +503,7 @@ private File storeImage(Bitmap image, String suffix) {
 	if (pictureFile != null) {
 		try {
 			FileOutputStream fos = new FileOutputStream(pictureFile);
-			image.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+			image.compress(Bitmap.CompressFormat.JPEG, 85, fos);
 			fos.close();
 			return pictureFile;
 		}
@@ -762,16 +767,11 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
       count++;
 		}
 
-		// Cannot find the one match the aspect ratio, ignore the requirement
-		// if (optimalSize == null) {
-		// 	minDiff = Double.MAX_VALUE;
-		// 	for (Camera.Size size : sizes) {
-		// 		if (Math.abs(size.height - targetHeight) < minDiff) {
-		// 			optimalSize = size;
-		// 			minDiff = Math.abs(size.height - targetHeight);
-		// 		}
-		// 	}
-		// }
+
+		if(optimalSize.width < 640 && optimalSize.height < 480){
+			optimalSize.width = 640;
+			optimalSize.height = 480;
+		}
 
 		Log.d(TAG, "optimal preview size: w: " + optimalSize.width + " h: " + optimalSize.height);
 		return optimalSize;
@@ -804,7 +804,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
 			// Convert YuV to Jpeg
 			Rect rect = new Rect(0, 0, w, h);
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			yuvImage.compressToJpeg(rect, 80, outputStream);
+			yuvImage.compressToJpeg(rect, 85, outputStream);
 			return outputStream.toByteArray();
 		}
 		return data;
