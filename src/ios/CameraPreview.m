@@ -197,10 +197,10 @@
                          NSLog(@"%@", error);
                  } else {
                         //  Preview Image
-                        //  [self.cameraRenderController.renderLock lock];
+                         [self.cameraRenderController.renderLock lock];
                         //  CIImage *previewCImage = self.cameraRenderController.latestFrame;
                         //  CGImageRef previewImage = [self.cameraRenderController.ciContext createCGImage:previewCImage fromRect:previewCImage.extent];
-                        //  [self.cameraRenderController.renderLock unlock];
+                         [self.cameraRenderController.renderLock unlock];
 
                          NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:sampleBuffer];
                          UIImage *capturedImage  = [[UIImage alloc] initWithData:imageData];
